@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Countdown | 1 March 2026</title>
+    <title>Thet Mhue Wai's Birthday</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
@@ -52,20 +52,30 @@
             width: 100%;
         }
 
-        h1 {
-            font-size: clamp(1.5rem, 5vw, 3rem);
-            font-weight: 300;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            opacity: 0.9;
+        header {
+            margin-bottom: 4rem;
         }
 
-        .subtitle {
-            font-size: 1rem;
-            color: var(--text-dim);
-            letter-spacing: 0.1em;
-            margin-bottom: 4rem;
+        h1 {
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to bottom, #fff 40%, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .age-badge {
+            display: inline-block;
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            border-top: 1px solid var(--accent-glow);
+            border-bottom: 1px solid var(--accent-glow);
+            padding: 0.5rem 2rem;
+            margin-top: 0.5rem;
         }
 
         /* Countdown Grid */
@@ -84,23 +94,23 @@
             padding: 2rem 1rem;
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .time-box:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: var(--accent-blue);
-            box-shadow: 0 0 20px var(--accent-glow);
+            box-shadow: 0 0 25px var(--accent-glow);
         }
 
         .number {
             display: block;
-            font-size: clamp(2rem, 8vw, 4.5rem);
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
             font-weight: 700;
             line-height: 1;
             color: var(--accent-blue);
-            text-shadow: 0 0 15px var(--accent-glow);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 0 20px var(--accent-glow);
+            transition: opacity 0.3s ease;
         }
 
         .label {
@@ -114,19 +124,19 @@
 
         /* Notify Button */
         .notify-btn {
+            display: inline-block;
+            text-decoration: none;
             background: transparent;
             color: var(--text-main);
             border: 1px solid var(--accent-blue);
-            padding: 1rem 2.5rem;
+            padding: 1.2rem 3rem;
             font-family: inherit;
             font-size: 1rem;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.2em;
             border-radius: 50px;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
             transition: all 0.4s ease;
             box-shadow: 0 0 0 rgba(0, 212, 255, 0);
         }
@@ -134,17 +144,17 @@
         .notify-btn:hover {
             background: var(--accent-blue);
             color: #000;
-            box-shadow: 0 0 30px var(--accent-glow);
+            box-shadow: 0 0 40px var(--accent-glow);
             transform: scale(1.05);
         }
 
         /* Mobile Adjustments */
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
             .countdown-wrapper {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 1rem;
             }
-            .subtitle { margin-bottom: 2rem; }
+            header { margin-bottom: 2.5rem; }
         }
     </style>
 </head>
@@ -153,6 +163,11 @@
     <canvas id="canvas-bg"></canvas>
 
     <div class="container">
+        <header>
+            <h1>Thet Mhue Wai's Birthday</h1>
+            <div class="age-badge">24 Year</div>
+        </header>
+
         <div class="countdown-wrapper">
             <div class="time-box">
                 <span class="number" id="days">00</span>
@@ -171,12 +186,17 @@
                 <span class="label">Seconds</span>
             </div>
         </div>
+
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Thet+Mhue+Wai%27s+24th+Birthday&dates=20260301T000000/20260301T235959&details=Happy+Birthday!&location=Yangon,+Myanmar&ctz=Asia/Yangon" 
+           target="_blank" 
+           class="notify-btn">
+           Notify Me
+        </a>
     </div>
 
     <script>
         /**
-         * TIMEZONE LOGIC
-         * Target: March 1, 2026, 00:00:00 MMT (UTC+6:30)
+         * TARGET: March 1, 2026, 00:00:00 MMT (UTC+6:30)
          */
         const TARGET_DATE = new Date('2026-03-01T00:00:00+06:30').getTime();
 
@@ -186,7 +206,7 @@
 
             if (distance < 0) {
                 document.querySelector('.countdown-wrapper').innerHTML = 
-                    "<h2 style='grid-column: span 4; font-size: 3rem; color: var(--accent-blue);'>EVENT STARTED</h2>";
+                    "<h2 style='grid-column: span 4; font-size: 3rem; color: var(--accent-blue); text-shadow: 0 0 20px var(--accent-glow);'>HAPPY BIRTHDAY!</h2>";
                 return;
             }
 
@@ -195,24 +215,19 @@
             const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((distance % (1000 * 60)) / 1000);
 
-            animateValue('days', d);
-            animateValue('hours', h);
-            animateValue('minutes', m);
-            animateValue('seconds', s);
+            renderValue('days', d);
+            renderValue('hours', h);
+            renderValue('minutes', m);
+            renderValue('seconds', s);
 
             requestAnimationFrame(updateCountdown);
         }
 
-        // Helper to update text with a soft fade if changed
-        function animateValue(id, val) {
+        function renderValue(id, val) {
             const el = document.getElementById(id);
-            const formatted = val < 10 ? '0' + val : val;
-            if (el.innerText !== formatted.toString()) {
-                el.style.opacity = '0';
-                setTimeout(() => {
-                    el.innerText = formatted;
-                    el.style.opacity = '1';
-                }, 50);
+            const formatted = val.toString().padStart(2, '0');
+            if (el.innerText !== formatted) {
+                el.innerText = formatted;
             }
         }
 
@@ -227,14 +242,14 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             particles = [];
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 100; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    radius: Math.random() * 2 + 0.5,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
-                    opacity: Math.random() * 0.5 + 0.2
+                    radius: Math.random() * 1.5 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.2,
+                    vy: (Math.random() - 0.5) * 0.2,
+                    opacity: Math.random() * 0.5 + 0.1
                 });
             }
         }
@@ -250,19 +265,19 @@
                 p.x += p.vx;
                 p.y += p.vy;
 
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
             });
             requestAnimationFrame(drawBackground);
         }
 
         window.addEventListener('resize', initCanvas);
         
-        // Initialize
         initCanvas();
         drawBackground();
         updateCountdown();
-
     </script>
 </body>
 </html>
