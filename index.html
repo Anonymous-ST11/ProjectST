@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Countdown | 1 March 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050b1a;
+            --accent-blue: #00d4ff;
+            --accent-glow: rgba(0, 212, 255, 0.4);
+            --text-main: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Animated Background Canvas */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0a1633 0%, #050b1a 100%);
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            z-index: 1;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            margin-bottom: 4rem;
+        }
+
+        /* Countdown Grid */
+        .countdown-wrapper {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .time-box {
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .number {
+            display: block;
+            font-size: clamp(2rem, 8vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1;
+            color: var(--accent-blue);
+            text-shadow: 0 0 15px var(--accent-glow);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-top: 1rem;
+            letter-spacing: 0.2em;
+        }
+
+        /* Notify Button */
+        .notify-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--accent-blue);
+            padding: 1rem 2.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 0 rgba(0, 212, 255, 0);
+        }
+
+        .notify-btn:hover {
+            background: var(--accent-blue);
+            color: #000;
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .countdown-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            .subtitle { margin-bottom: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <div class="container">
+        <h1>Countdown to 1 March 2026</h1>
+        <p class="subtitle">Yangon, Myanmar Time (MMT)</p>
+
+        <div class="countdown-wrapper">
+            <div class="time-box">
+                <span class="number" id="days">00</span>
+                <span class="label">Days</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="hours">00</span>
+                <span class="label">Hours</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Minutes</span>
+            </div>
+            <div class="time-box">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Seconds</span>
+            </div>
+        </div>
+
+        <button class="notify-btn">Notify Me</button>
+    </div>
+
+    <script>
+        /**
+         * TIMEZONE LOGIC
+         * Target: March 1, 2026, 00:00:00 MMT (UTC+6:30)
+         */
+        const TARGET_DATE = new Date('2026-03-01T00:00:00+06:30').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = TARGET_DATE - now;
+
+            if (distance < 0) {
+                document.querySelector('.countdown-wrapper').innerHTML = 
+                    "<h2 style='grid-column: span 4; font-size: 3rem; color: var(--accent-blue);'>EVENT STARTED</h2>";
+                return;
+            }
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            animateValue('days', d);
+            animateValue('hours', h);
+            animateValue('minutes', m);
+            animateValue('seconds', s);
+
+            requestAnimationFrame(updateCountdown);
+        }
+
+        // Helper to update text with a soft fade if changed
+        function animateValue(id, val) {
+            const el = document.getElementById(id);
+            const formatted = val < 10 ? '0' + val : val;
+            if (el.innerText !== formatted.toString()) {
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.innerText = formatted;
+                    el.style.opacity = '1';
+                }, 50);
+            }
+        }
+
+        /**
+         * BACKGROUND ANIMATION (Floating Particles)
+         */
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 212, 255, ${p.opacity})`;
+                ctx.fill();
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            });
+            requestAnimationFrame(drawBackground);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        
+        // Initialize
+        initCanvas();
+        drawBackground();
+        updateCountdown();
+
+    </script>
+</body>
+</html>
