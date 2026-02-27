@@ -33,7 +33,6 @@
             justify-content: center;
         }
 
-        /* Animated Background Canvas */
         #canvas-bg {
             position: fixed;
             top: 0;
@@ -78,7 +77,6 @@
             margin-top: 0.5rem;
         }
 
-        /* Countdown Grid */
         .countdown-wrapper {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -148,7 +146,58 @@
             transform: scale(1.05);
         }
 
-        /* Mobile Adjustments */
+        /* Birthday Button (shown when time is up) */
+        .birthday-btn {
+            display: none;
+            text-decoration: none;
+            background: transparent;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+            padding: 1.4rem 3.5rem;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-glow 2s ease-in-out infinite;
+            box-shadow: 0 0 30px var(--accent-glow), inset 0 0 30px rgba(0,212,255,0.05);
+            transition: all 0.4s ease;
+        }
+
+        .birthday-btn.visible {
+            display: inline-block;
+        }
+
+        .birthday-btn:hover {
+            background: var(--accent-blue);
+            color: #000;
+            box-shadow: 0 0 60px var(--accent-glow), 0 0 120px rgba(0,212,255,0.3);
+            transform: scale(1.08);
+            animation: none;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px var(--accent-glow), inset 0 0 20px rgba(0,212,255,0.05);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(0,212,255,0.8), 0 0 100px rgba(0,212,255,0.3), inset 0 0 30px rgba(0,212,255,0.1);
+            }
+        }
+
+        /* Burst particles canvas overlay */
+        #burst-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         @media (max-width: 650px) {
             .countdown-wrapper {
                 grid-template-columns: repeat(2, 1fr);
@@ -161,11 +210,12 @@
 <body>
 
     <canvas id="canvas-bg"></canvas>
+    <canvas id="burst-canvas"></canvas>
 
     <div class="container">
         <header>
             <h1>Thet Mhue Wai's Birthday</h1>
-            <div class="age-badge">24 Year</div>
+            <div class="age-badge">24 Years</div>
         </header>
 
         <div class="countdown-wrapper">
@@ -189,8 +239,13 @@
 
         <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Thet+Mhue+Wai%27s+24th+Birthday&dates=20260301T000000/20260301T235959&details=Happy+Birthday!&location=Yangon,+Myanmar&ctz=Asia/Yangon" 
            target="_blank" 
-           class="notify-btn">
+           class="notify-btn"
+           id="notifyBtn">
            Notify Me
+        </a>
+
+        <a href="bd.html" class="birthday-btn" id="birthdayBtn">
+            🎂 Open Birthday Surprise
         </a>
     </div>
 
@@ -200,13 +255,17 @@
          */
         const TARGET_DATE = new Date('2026-03-01T00:00:00+06:30').getTime();
 
+        let birthdayTriggered = false;
+
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = TARGET_DATE - now;
 
             if (distance < 0) {
-                document.querySelector('.countdown-wrapper').innerHTML = 
-                    "<h2 style='grid-column: span 4; font-size: 3rem; color: var(--accent-blue); text-shadow: 0 0 20px var(--accent-glow);'>HAPPY BIRTHDAY!</h2>";
+                if (!birthdayTriggered) {
+                    birthdayTriggered = true;
+                    triggerBirthday();
+                }
                 return;
             }
 
@@ -220,7 +279,7 @@
             renderValue('minutes', m);
             renderValue('seconds', s);
 
-            requestAnimationFrame(updateCountdown);
+            setTimeout(updateCountdown, 1000);
         }
 
         function renderValue(id, val) {
@@ -231,21 +290,51 @@
             }
         }
 
-        /**
-         * BACKGROUND ANIMATION (Floating Particles)
-         */
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+        function triggerBirthday() {
+            // Hide countdown boxes and notify button
+            document.querySelectorAll('.time-box').forEach(box => {
+                box.style.transition = 'all 0.8s ease';
+                box.style.opacity = '0';
+                box.style.transform = 'scale(0.8)';
+            });
+            document.getElementById('notifyBtn').style.display = 'none';
 
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
+            setTimeout(() => {
+                // Replace countdown with HAPPY BIRTHDAY text
+                const wrapper = document.querySelector('.countdown-wrapper');
+                wrapper.innerHTML = "<div style='grid-column: span 4; padding: 2rem 0;'><h2 style='font-size: clamp(2rem,7vw,4rem); color: var(--accent-blue); text-shadow: 0 0 30px var(--accent-glow); letter-spacing: 0.05em; animation: pulse-glow 2s ease-in-out infinite;'>HAPPY BIRTHDAY! 🎂</h2></div>";
+
+                // Show birthday button
+                const btn = document.getElementById('birthdayBtn');
+                btn.classList.add('visible');
+                btn.style.opacity = '0';
+                btn.style.transform = 'scale(0.5)';
+                btn.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        btn.style.opacity = '1';
+                        btn.style.transform = 'scale(1)';
+                    });
+                });
+
+                // Start burst particles
+                startBurstParticles();
+            }, 600);
+        }
+
+        /* ─── BACKGROUND PARTICLES ─── */
+        const bgCanvas = document.getElementById('canvas-bg');
+        const bgCtx = bgCanvas.getContext('2d');
+        let bgParticles = [];
+
+        function initBgCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+            bgParticles = [];
             for (let i = 0; i < 100; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
+                bgParticles.push({
+                    x: Math.random() * bgCanvas.width,
+                    y: Math.random() * bgCanvas.height,
                     radius: Math.random() * 1.5 + 0.5,
                     vx: (Math.random() - 0.5) * 0.2,
                     vy: (Math.random() - 0.5) * 0.2,
@@ -254,29 +343,86 @@
             }
         }
 
-        function drawBackground() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 212, 255, ${p.opacity})`;
-                ctx.fill();
-
+        function drawBg() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            bgParticles.forEach(p => {
+                bgCtx.beginPath();
+                bgCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                bgCtx.fillStyle = `rgba(0, 212, 255, ${p.opacity})`;
+                bgCtx.fill();
                 p.x += p.vx;
                 p.y += p.vy;
-
-                if (p.x < 0) p.x = canvas.width;
-                if (p.x > canvas.width) p.x = 0;
-                if (p.y < 0) p.y = canvas.height;
-                if (p.y > canvas.height) p.y = 0;
+                if (p.x < 0) p.x = bgCanvas.width;
+                if (p.x > bgCanvas.width) p.x = 0;
+                if (p.y < 0) p.y = bgCanvas.height;
+                if (p.y > bgCanvas.height) p.y = 0;
             });
-            requestAnimationFrame(drawBackground);
+            requestAnimationFrame(drawBg);
         }
 
-        window.addEventListener('resize', initCanvas);
-        
-        initCanvas();
-        drawBackground();
+        /* ─── BURST PARTICLES (Birthday) ─── */
+        const burstCanvas = document.getElementById('burst-canvas');
+        const burstCtx = burstCanvas.getContext('2d');
+        let burstParticles = [];
+        let burstActive = false;
+
+        function startBurstParticles() {
+            burstCanvas.width = window.innerWidth;
+            burstCanvas.height = window.innerHeight;
+            burstActive = true;
+            spawnBurst();
+            setInterval(spawnBurst, 800);
+            animateBurst();
+        }
+
+        function spawnBurst() {
+            const cx = burstCanvas.width / 2;
+            const cy = burstCanvas.height / 2;
+            const colors = ['#00d4ff', '#ffffff', '#ff79c6', '#ffb86c', '#50fa7b', '#bd93f9'];
+            for (let i = 0; i < 40; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 6 + 2;
+                burstParticles.push({
+                    x: cx + (Math.random() - 0.5) * 200,
+                    y: cy + (Math.random() - 0.5) * 100,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - Math.random() * 3,
+                    radius: Math.random() * 4 + 1,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1,
+                    decay: Math.random() * 0.015 + 0.008,
+                    gravity: 0.12
+                });
+            }
+        }
+
+        function animateBurst() {
+            if (!burstActive) return;
+            burstCtx.clearRect(0, 0, burstCanvas.width, burstCanvas.height);
+            burstParticles = burstParticles.filter(p => p.alpha > 0);
+            burstParticles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity;
+                p.alpha -= p.decay;
+                burstCtx.beginPath();
+                burstCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                burstCtx.fillStyle = p.color + Math.floor(p.alpha * 255).toString(16).padStart(2, '0');
+                burstCtx.fill();
+            });
+            requestAnimationFrame(animateBurst);
+        }
+
+        window.addEventListener('resize', () => {
+            initBgCanvas();
+            if (burstActive) {
+                burstCanvas.width = window.innerWidth;
+                burstCanvas.height = window.innerHeight;
+            }
+        });
+
+        initBgCanvas();
+        drawBg();
         updateCountdown();
     </script>
 </body>
