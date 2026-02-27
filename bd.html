@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy 24th Birthday</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Fixed canvases -->
+  <canvas id="star-canvas"></canvas>
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Nebula haze (CSS animated gradients) -->
+  <div class="nebula"></div>
+
+  <!-- Vignette overlay -->
+  <div class="vignette"></div>
+
+  <!-- Section A — Dashboard / Universe -->
+  <section id="dashboard" class="section section--hero">
+    <h1 class="hero-text">Happy 24th Birthday</h1>
+    <div class="scroll-hint">
+      <!-- Mouse scroll icon -->
+      <div class="scroll-mouse">
+        <div class="scroll-mouse-wheel"></div>
+      </div>
+      <span class="scroll-label">Scroll to explore</span>
+      <!-- Animated chevrons -->
+      <div class="scroll-chevrons">
+        <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
+          <path d="M1 1l9 8 9-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
+          <path d="M1 1l9 8 9-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section B — Home -->
+  <section id="home" class="section">
+    <div class="home-inner">
+      <span class="home-label">Welcome</span>
+      <h2 class="home-title">A New Chapter Begins</h2>
+      <p class="home-body">Here's to the memories, the adventures,<br>and everything yet to come.</p>
+      <div class="home-divider"></div>
+    </div>
+  </section>
+
+  <!-- Section C — Wish Letter (password-locked envelope) -->
+  <section id="wish" class="section">
+    <canvas id="sparkle-canvas"></canvas>
+
+    <!-- Envelope + gate wrapper (fades out after unlock) -->
+    <div class="wish-wrap" id="wish-wrap">
+      <h2 class="wish-title">Wish Letter</h2>
+      <p class="wish-subtitle">Enter password to open</p>
+
+      <!-- Envelope (no letter inside — letter is a separate full-page element) -->
+      <div class="envelope" id="envelope">
+        <div class="envelope__wrapper">
+          <div class="envelope__back"></div>
+          <div class="envelope__front">
+            <div class="envelope__fold envelope__fold--left"></div>
+            <div class="envelope__fold envelope__fold--right"></div>
+          </div>
+          <div class="envelope__flap"></div>
+          <div class="envelope__seal" id="envelope-seal">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M8 11V7a4 4 0 1 1 8 0v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password gate -->
+      <div class="wish-gate" id="wish-gate">
+        <div class="wish-input-wrap">
+          <input type="password" id="wish-input" class="wish-input" placeholder="Password" autocomplete="off" />
+          <button id="wish-btn" class="wish-btn">Open</button>
+        </div>
+        <p class="wish-msg" id="wish-msg"></p>
+      </div>
+    </div>
+
+    <!-- ★ FULL PAPER LETTER — expands from envelope on unlock -->
+    <div class="letter-paper" id="letter-paper">
+      <div class="letter-paper-texture"></div>
+      <div class="letter-header">
+        <div class="letter-header-line"></div>
+      </div>
+      <div class="letter-content" id="letter-content">
+        <p class="letter-date">February 27, 2026</p>
+        <h3 class="letter-greeting">Happy 24th Birthday!</h3>
+        <p>On this special day I want you to know just how much you mean to me. Every moment we've shared has been a gift, and I'm so grateful for the laughter, the late-night talks, and all the little things in between.</p>
+        <p>May this new year of your life bring you endless joy, exciting adventures, and everything your heart desires. You deserve all the happiness in the world.</p>
+        <p>Here's to more memories, more dreams coming true, and more reasons to celebrate. I'll always be cheering you on, today and every day.</p>
+        <p class="letter-sign">With all my love &hearts;</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Section D — Particle Photo Universe
+       ═══════════════════════════════════════════════════════ -->
+  <section id="photo-universe" class="section photo-universe-section">
+    <!-- Local star field -->
+    <canvas class="pu-stars-canvas"></canvas>
+    <!-- Blue core glow -->
+    <div class="pu-core-glow"></div>
+    <!-- Vignette -->
+    <div class="pu-vignette"></div>
+    <!-- 3D perspective stage -->
+    <div class="pu-stage">
+      <!-- Photo elements injected by JS -->
+    </div>
+    <!-- Featured photo overlay -->
+    <div class="pu-featured-frame" id="pu-featured-frame">
+      <img class="pu-featured-img" id="pu-featured-img" src="" alt="Featured" />
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Section E — Songs (Pixel Music Player — Carousel)
+       ═══════════════════════════════════════════════════════ -->
+  <section id="songs" class="section songs-section">
+    <!-- Pixel grid overlay -->
+    <div class="songs-grid-overlay"></div>
+    <!-- Scanline effect -->
+    <div class="songs-scanlines"></div>
+
+    <div class="songs-container">
+      <h2 class="songs-title">Songs for you</h2>
+      <p class="songs-subtitle">Select a Track</p>
+
+      <!-- Carousel viewport -->
+      <div class="songs-carousel">
+        <div class="songs-carousel-track" id="songs-carousel-track">
+          <!-- Slides injected by JS from TRACK_LIST -->
+        </div>
+      </div>
+
+      <!-- Carousel nav -->
+      <div class="songs-carousel-nav">
+        <button class="sc-arrow sc-arrow-prev" id="sc-prev" title="Previous slide">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><polygon points="11,2 5,8 11,14"/></svg>
+        </button>
+        <div class="sc-dots" id="sc-dots">
+          <!-- Dots injected by JS -->
+        </div>
+        <button class="sc-arrow sc-arrow-next" id="sc-next" title="Next slide">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><polygon points="5,2 11,8 5,14"/></svg>
+        </button>
+      </div>
+
+      <!-- Now-Playing bar -->
+      <div class="songs-player-bar" id="songs-player-bar">
+        <button class="sp-btn sp-prev" id="sp-prev" title="Previous track">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <rect x="1" y="3" width="3" height="10"/><polygon points="14,3 6,8 14,13"/>
+          </svg>
+        </button>
+        <button class="sp-btn sp-play" id="sp-play" title="Play / Pause">
+          <svg class="sp-icon-play" width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+            <polygon points="3,1 13,8 3,15"/>
+          </svg>
+          <svg class="sp-icon-pause" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style="display:none">
+            <rect x="2" y="1" width="4" height="14"/><rect x="10" y="1" width="4" height="14"/>
+          </svg>
+        </button>
+        <button class="sp-btn sp-next" id="sp-next" title="Next track">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <rect x="12" y="3" width="3" height="10"/><polygon points="2,3 10,8 2,13"/>
+          </svg>
+        </button>
+        <div class="sp-track-info">
+          <span class="sp-now-title" id="sp-now-title">—</span>
+          <span class="sp-now-artist" id="sp-now-artist"></span>
+        </div>
+        <div class="sp-progress-wrap" id="sp-progress-wrap">
+          <span class="sp-time" id="sp-time-cur">0:00</span>
+          <div class="sp-progress-bar" id="sp-progress-bar">
+            <div class="sp-progress-fill" id="sp-progress-fill"></div>
+          </div>
+          <span class="sp-time" id="sp-time-dur">0:00</span>
+        </div>
+        <div class="sp-volume-wrap">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+            <polygon points="1,6 1,10 4,10 8,14 8,2 4,6"/>
+            <path d="M11,4.5 Q14,8 11,11.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input type="range" class="sp-volume" id="sp-volume" min="0" max="1" step="0.01" value="0.7">
+        </div>
+      </div>
+    </div>
+
+    <!-- Single audio element -->
+    <audio id="songs-audio" preload="metadata"></audio>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
