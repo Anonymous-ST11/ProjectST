@@ -22,7 +22,7 @@ const CONFIG = {
   IMAGE_EXTENSIONS:  ['jpg', 'jpeg', 'png'],  // supported file types (tried in order)
 
   /* ── Wish Letter ───────────────────────────────────────── */
-  WISH_PASSWORD:     'SH1132003', // ★ Change this to your desired password
+  WISH_PASSWORD:     'TMW132002', // ★ Change this to your desired password
   SPARKLE_COUNT:     50,                   // burst particles on unlock
   SPARKLE_LIFETIME:  1800,                 // ms
 
